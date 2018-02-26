@@ -26,7 +26,7 @@ public class ExtendedGuiChat extends GuiChat {
         && channel.getCommand()!=null
         && !(channel.getCommand().isEmpty())) {
             Minecraft.getMinecraft().player.sendChatMessage(channel.getCommand());
-            System.out.println("ext gui chat click "+mouseX + "/" + mouseY + "/" + mouseButton+" " +channel.getCommand());
+            // System.out.println("ext gui chat click "+mouseX + "/" + mouseY + "/" + mouseButton+" " +channel.getCommand());
             return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);

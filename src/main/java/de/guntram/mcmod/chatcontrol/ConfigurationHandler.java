@@ -11,6 +11,7 @@ public class ConfigurationHandler {
 
     private Configuration config;
     private String configFileName;
+    private boolean showChannelWhenNotChatting;
 
     public static ConfigurationHandler getInstance() {
         if (instance==null)
@@ -28,17 +29,13 @@ public class ConfigurationHandler {
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        // System.out.println("OnConfigChanged for "+event.getModID());
         if (event.getModID().equalsIgnoreCase(ChatControl.MODID)) {
             loadConfig();
         }
     }
     
     private void loadConfig() {
-//        allowUpload=config.getBoolean("Allow Upload", Configuration.CATEGORY_CLIENT, allowUpload, "Allow Upload to central database");
-//        allowDownload=config.getBoolean("Allow Download", Configuration.CATEGORY_CLIENT, allowDownload, "Allow Download from central database (only if Upload is enabled as well)");
-//        saveEveryXMinutes=config.getInt("Save every X minutes", Configuration.CATEGORY_CLIENT, 1, 1, 60, "How often sign data will be saved locally");
-//        uploadEveryXMinutes=config.getInt("Upload every X minutes", Configuration.CATEGORY_CLIENT, 5, 5, 60, "How often sign data will be uploaded");
+        showChannelWhenNotChatting=config.getBoolean("Always show chat channel", Configuration.CATEGORY_CLIENT, true, "Show current channel at the bottom left when chat isn't active");
         if (config.hasChanged())
             config.save();
     }
@@ -49,5 +46,9 @@ public class ConfigurationHandler {
     
     public static String getConfigFileName() {
         return getInstance().configFileName;
+    }
+    
+    public static boolean showChannel() {
+        return getInstance().showChannelWhenNotChatting;
     }
 }

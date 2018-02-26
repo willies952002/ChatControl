@@ -1,11 +1,11 @@
 package de.guntram.mcmod.chatcontrol;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -18,12 +18,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = ChatControl.MODID, 
         version = ChatControl.VERSION,
 	clientSideOnly = true, 
 	guiFactory = "de.guntram.mcmod.chatcontrol.GuiFactory",
-	acceptedMinecraftVersions = "[1.12]"
+	acceptedMinecraftVersions = "[1.12]",
+        updateJSON = "https://raw.githubusercontent.com/gbl/ChatControl/master/versioncheck.json"
 )
 
 public class ChatControl
@@ -31,13 +33,16 @@ public class ChatControl
     static final String MODID="chatcontrol";
     static final String VERSION="1.0";
 
-    private boolean turnedOn=true;
-    private boolean didDebug=false;
     private Minecraft mc;
+    
+    private Field guiChatInputField;
+    
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        // need this later when the chat GUI opens
+        guiChatInputField=ReflectionHelper.findField(GuiChat.class, "defaultInputFieldText", "field_146409_v");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -56,7 +61,7 @@ public class ChatControl
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onRender(final RenderGameOverlayEvent.Post event) {
-        if (!turnedOn
+        if (!ConfigurationHandler.showChannel()
         ||  event.isCanceled()
         ||  event.getType()!=RenderGameOverlayEvent.ElementType.CHAT)
             return;
@@ -74,10 +79,6 @@ public class ChatControl
         if (chat.getChatOpen()) {
             x+=3;
             y-=18;
-            if (!didDebug) {
-                System.out.println("DEBUG CHATCONTROL render at y= "+y);
-                didDebug=true;
-            }
             for (ChatChannel channel:ChatChannelRegistry.getAllChannels()) {
                 if ((channel.getCommand() != null && !channel.getCommand().isEmpty()) || channel==currentChannel) {
                     int size=mc.fontRenderer.getStringWidth(channel.getDescription());
@@ -115,8 +116,13 @@ public class ChatControl
     public void guiOpenEvent(GuiOpenEvent event) {
         if (event.getGui() instanceof GuiChat) {
             GuiChat guiChat=(GuiChat)(event.getGui());
-            // need reflection to get current text from guiChat 
-            ExtendedGuiChat egc = new ExtendedGuiChat("");
+            String preset="";
+            try {
+                preset=(String)guiChatInputField.get(guiChat);
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                System.out.println("Getting preset text resulted in "+ex.getMessage()+", using empty string");
+            }
+            ExtendedGuiChat egc = new ExtendedGuiChat(preset);
             event.setGui(egc);
         }
     }
