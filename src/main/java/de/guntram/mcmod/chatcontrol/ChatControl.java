@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class ChatControl
 {
     static final String MODID="chatcontrol";
-    static final String VERSION="1.0";
+    static final String VERSION="@VERSION@";
 
     private Minecraft mc;
     
