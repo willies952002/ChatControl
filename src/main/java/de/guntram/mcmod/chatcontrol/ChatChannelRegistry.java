@@ -61,7 +61,8 @@ public class ChatChannelRegistry {
     
     static void readConfigFile(String configFileName) {
         File channelFile= new File(configFileName);
-        try (BufferedReader reader=new BufferedReader(new FileReader(channelFile))) {
+        try {
+            BufferedReader reader=new BufferedReader(new FileReader(channelFile));
             String separator=";";
             String line;
             SortedSet<ChatChannel> newChannels = getNewChannelSet();
@@ -85,12 +86,15 @@ public class ChatChannelRegistry {
             }
             channels=newChannels;
             current=newChannels.first();
+            reader.close();
         } catch (FileNotFoundException ex) {
-            try (FileWriter writer=new FileWriter(channelFile)) {
+            try {
+                FileWriter writer=new FileWriter(channelFile);
                 for (ChatChannel channel: channels) {
                     writer.append(channel.getSaveString());
                     writer.append("\r\n");
                 }
+                writer.close();
             } catch (IOException ex1) {
                 System.out.println("error writing example file "+channelFile.getAbsolutePath()+" "+ex.getMessage());
             }
@@ -100,7 +104,7 @@ public class ChatChannelRegistry {
     }
     
     static TreeSet<ChatChannel> getNewChannelSet() {
-        return new TreeSet<>(new Comparator() {
+        return new TreeSet<ChatChannel>(new Comparator() {
                 @Override
                 public int compare(Object o1, Object o2) {
                     return ((ChatChannel)o1).channelName.compareTo(((ChatChannel)o2).channelName);

@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
         version = ChatControl.VERSION,
 	clientSideOnly = true, 
 	guiFactory = "de.guntram.mcmod.chatcontrol.GuiFactory",
-	acceptedMinecraftVersions = "[1.12]",
+	acceptedMinecraftVersions = "[1.10.2]",
         updateJSON = "https://raw.githubusercontent.com/gbl/ChatControl/master/versioncheck.json"
 )
 
@@ -119,7 +119,7 @@ public class ChatControl
             String preset="";
             try {
                 preset=(String)guiChatInputField.get(guiChat);
-            } catch (IllegalArgumentException | IllegalAccessException ex) {
+            } catch (Exception ex) {
                 System.out.println("Getting preset text resulted in "+ex.getMessage()+", using empty string");
             }
             ExtendedGuiChat egc = new ExtendedGuiChat(preset);
