@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
         version = ChatControl.VERSION,
 	clientSideOnly = true, 
 	guiFactory = "de.guntram.mcmod.chatcontrol.GuiFactory",
-	acceptedMinecraftVersions = "[1.10.2]",
+	acceptedMinecraftVersions = "[1.11.2]",
         updateJSON = "https://raw.githubusercontent.com/gbl/ChatControl/master/versioncheck.json"
 )
 
