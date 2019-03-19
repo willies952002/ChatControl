@@ -1,5 +1,14 @@
-build
-gradle
+## IntelliJ IDEA ##
+.idea/
+
+## General Java ##
+*.jar
+hs_err_pid*
+
+## Gradle ##
 .gradle
-.nb-gradle
-gradlew
+build/
+!gradle-wrapper.jar
+
+## Minecraft Run Files ##
+run/
